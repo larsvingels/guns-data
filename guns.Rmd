@@ -1,0 +1,52 @@
+---
+title: "US gun deaths"
+author: "Lars"
+date: "20 2 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+
+opts_knit$set(root.dir = "~/lars_projects/guns")
+opts_chunk$set(fig.path="figs/",
+               fig.align='center',
+               fig.show='hold',
+               results='asis',
+               echo = FALSE,
+               warning = FALSE,
+               message = FALSE)
+```
+
+```{r}
+library(forcats)
+library(stringr)
+library(lubridate)
+library(tidyverse)
+```
+
+
+## Who commits suicide?
+
+Data from <http://fivethirtyeight.com>
+Data from 2012 - 2014?
+
+```{r}
+full_guns <- read_csv("full_data.csv")
+
+
+full_guns %>%
+  filter(intent %in% c("Suicide", "Homicide", "Accidental")) %>%
+  ggplot(aes(age, color=intent)) +
+  geom_density()
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
