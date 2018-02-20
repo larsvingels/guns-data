@@ -31,22 +31,53 @@ library(tidyverse)
 Data from <http://fivethirtyeight.com>
 Data from 2012 - 2014?
 
-```{r}
-full_guns <- read_csv("full_data.csv")
+## Age of victims
+
+```{r, age_density}
+full_guns <- read_csv("data/full_data.csv")
 
 
 full_guns %>%
   filter(intent %in% c("Suicide", "Homicide", "Accidental")) %>%
   ggplot(aes(age, color=intent)) +
-  geom_density()
+  geom_density() +
+  facet_wrap(~sex)
 ```
 
-## Including Plots
+What stands out here is the peak in density at late 20s for male homicide victims. A huge increase in risk of homicide after about age seventeen. A similar pattern is seen among female victims, but the peak is much less marked.
 
-You can also embed plots, for example:
+Similarly is there a bimodal pattern for suicide victims among males, with a peak at late 20s, and a later peak in 50-55 year olds.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
+```{r, race_density_intent}
+full_guns %>%
+  filter(intent %in% c("Suicide", "Homicide", "Accidental")) %>%
+  ggplot(aes(age, color=intent)) +
+  geom_density() +
+  facet_wrap(~race)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+The striking feature of grouping on race is the early deaths of hispanic and black gun victims. The spike is well younger than 30 years old.
+
+```{r}
+tmp <- full_guns %>%
+  filter(intent %in% c("Suicide", "Homicide")) %>%
+  filter(race %in% c("Black", "White", "Hispanic"))
+  
+tmp %>%
+  group_by(race, intent) %>%
+  summarise(count = n()) %>%
+  kable()
+```
+
+
+```{r, race_abs_n}
+  
+  ggplot(tmp, aes(age)) +
+  geom_histogram(bins = 40) +
+  facet_grid(intent~race)
+```
+
+In absolute numbers. The numbers of black himicide victims are really high. So are the numbers of suicide among whites.
+
+
